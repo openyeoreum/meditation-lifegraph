@@ -7,7 +7,9 @@
         <div class="space" />
         <v-card class="card__main" elevation="10">
           <v-expand-transition>
-            <general-info v-if="true" />
+            <general-info v-if="!userInfo" />
+            <life-score v-else-if="!lifeData" />
+            <life-curve v-else />
           </v-expand-transition>
         </v-card>
       </div>
@@ -17,12 +19,25 @@
 
 <script>
 import GeneralInfo from "@/components/GeneralInfo.vue";
+import LifeScore from "@/components/LifeScore.vue";
+import LifeCurve from "@/components/LifeCurve.vue";
 
 export default {
   name: "App",
 
   components: {
-    GeneralInfo
+    GeneralInfo,
+    LifeScore,
+    LifeCurve
+  },
+
+  computed: {
+    userInfo() {
+      return this.$store.state.userInfo;
+    },
+    lifeData() {
+      return this.$store.state.lifeData;
+    }
   },
 
   data: () => ({
