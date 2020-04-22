@@ -6,16 +6,34 @@
 
     <h2>Let's get started!</h2>
     <div class="space" />
-    <v-text-field v-model="name" :rules="nameRules" label="Name" required></v-text-field>
-    <v-text-field v-model="age" type="number" :rules="ageRules" label="Age" required></v-text-field>
-    <v-text-field v-model="email" :rules="emailRules" label="E-mail" required></v-text-field>
+    <v-text-field
+      v-model="name"
+      :rules="nameRules"
+      label="Name"
+      required
+    ></v-text-field>
+    <v-text-field
+      v-model="age"
+      type="number"
+      :rules="ageRules"
+      label="Age"
+      required
+    ></v-text-field>
+    <v-text-field
+      v-model="email"
+      :rules="emailRules"
+      label="E-mail"
+      required
+    ></v-text-field>
     <div class="space" />
     <button
       class="gradient-btn"
       :disabled="!valid"
       v-bind:class="{ disabled: !valid }"
       @click="submit"
-    >Start</button>
+    >
+      Start
+    </button>
     <div class="logos">
       <img class="logo" :src="logoKaist" />
       <img class="logo" :src="logoCoursera" />
@@ -31,24 +49,24 @@ import coursera from "@/assets/coursera.png";
 
 export default {
   components: {
-    Logo
+    Logo,
   },
   data: () => ({
     valid: true,
     name: "",
-    nameRules: [v => !!v || "Name is required"],
+    nameRules: [(v) => !!v || "Name is required"],
     age: null,
     ageRules: [
-      v => !!v || "Age is required",
-      v => v >= 10 || "Too young to think about life..."
+      (v) => !!v || "Age is required",
+      (v) => v >= 10 || "Too young to think about life...",
     ],
     email: "",
     emailRules: [
-      v => !!v || "E-mail is required",
-      v => /.+@.+\..+/.test(v) || "E-mail must be valid"
+      (v) => !!v || "E-mail is required",
+      (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
     ],
     logoKaist: kaist,
-    logoCoursera: coursera
+    logoCoursera: coursera,
   }),
   methods: {
     submit(e) {
@@ -56,10 +74,10 @@ export default {
       this.$store.state.userInfo = {
         name: this.name,
         age: this.age,
-        email: this.email
+        email: this.email,
       };
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -100,5 +118,6 @@ export default {
 
 .logo {
   width: 100px;
+  object-fit: contain;
 }
 </style>
