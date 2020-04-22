@@ -12,7 +12,7 @@
       type="trend"
       auto-draw
     ></v-sparkline>
-    <div class="gradient-title">Life Curve</div>
+    <div class="gradient-title">Life Graph</div>
   </div>
 </template>
 
@@ -23,7 +23,7 @@ const gradients = [
   ["red", "orange", "yellow"],
   ["purple", "violet"],
   ["#00c6ff", "#F0F", "#FF0"],
-  ["#f72047", "#ffd200", "#1feaea"]
+  ["#f72047", "#ffd200", "#1feaea"],
 ];
 
 export default {
@@ -35,8 +35,8 @@ export default {
     gradient: gradients[5],
     value: [0, 2, 5, 9, 5, 10, 3, 5, 0, 0, 1, 8, 2, 9, 0],
     gradientDirection: "right",
-    gradients
-  })
+    gradients,
+  }),
 };
 </script>
 
@@ -63,5 +63,12 @@ export default {
   background: linear-gradient(270deg, #f72047, #ffd200, #1feaea);
   background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+@media only screen and (max-width: 880px) {
+  .gradient-title {
+    top: 15px;
+    font-size: 32px;
+  }
 }
 </style>
