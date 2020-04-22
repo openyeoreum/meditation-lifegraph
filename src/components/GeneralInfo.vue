@@ -117,7 +117,7 @@ export default {
 }
 
 .logo {
-  width: 100px;
+  height: 50px;
   object-fit: contain;
 }
 </style>

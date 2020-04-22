@@ -92,7 +92,7 @@ export default {
   }
 
   .v-slider__tick-label {
-    font-size: 6px;
+    font-size: 12px;
   }
 }
 </style>
