@@ -1,8 +1,8 @@
 <template>
   <div ref="lifeCurve">
-    <h2 v-if="!show">Making your life curve...</h2>
+    <h2 v-if="!show">Making your life graph...</h2>
     <div v-else id="graph">
-      <h2>Life Curve of {{ userInfo.name }}</h2>
+      <h2>Life Graph of {{ userInfo.name }}</h2>
 
       <div class="space" />
       <v-row v-if="show">
@@ -12,7 +12,7 @@
           <span>-10</span>
         </v-col>
         <v-col sm="11">
-          <canvas :height="emptyHeight" />
+          <canvas :height="padHeight" />
           <v-sparkline
             id="curve"
             :value="value"
@@ -23,17 +23,12 @@
             :stroke-linecap="lineCap"
             :gradient-direction="gradientDirection"
             type="trend"
-            :height="chartHeight"
+            :height="chartHeightString"
             auto-draw
           ></v-sparkline>
+          <canvas :height="padHeight" />
           <div class="age-label">
-            <div
-              class="caption"
-              v-for="(label, labelIdx) in ageLabels"
-              :key="labelIdx"
-            >
-              {{ label }}
-            </div>
+            <div class="caption" v-for="(label, labelIdx) in ageLabels" :key="labelIdx">{{ label }}</div>
           </div>
         </v-col>
         <div class="space" />
@@ -62,7 +57,7 @@ const gradients = [
   ["red", "orange", "yellow"],
   ["purple", "violet"],
   ["#00c6ff", "#F0F", "#FF0"],
-  ["#f72047", "#ffd200", "#1feaea"],
+  ["#f72047", "#ffd200", "#1feaea"]
 ];
 
 export default {
@@ -73,18 +68,22 @@ export default {
     lifeData() {
       return this.$store.state.lifeData;
     },
-    emptyHeight() {
-      const scores = this.lifeData.map((data) => data.score);
-      const maxScore = Math.max(...scores);
-      const height = 105 + 10 * maxScore;
-      return `${205 - height}px`;
-    },
+
     chartHeight() {
-      const scores = this.lifeData.map((data) => data.score);
+      const scores = this.lifeData.map(data => data.score);
       const maxScore = Math.max(...scores);
-      const height = 105 + 10 * maxScore;
-      return `${height}px`;
+      const minScore = Math.min(...scores);
+      const height = 10 * (maxScore - minScore + 1);
+      return height;
     },
+    chartHeightString() {
+      return `${this.chartHeight}px`;
+    },
+    padHeight() {
+      const chartHeight = this.chartHeight;
+      const pad = (200 - chartHeight) / 2;
+      return `${pad}px`;
+    }
   },
   data: () => ({
     show: false,
@@ -96,15 +95,10 @@ export default {
     value: [],
     ageLabels: [],
     gradientDirection: "right",
-    gradients,
+    gradients
   }),
   methods: {
     async download() {
-      // var svg = document.getElementById("curve");
-      // saveSvgAsPng.saveSvgAsPng(svg, `LifeGraph_${this.userInfo.name}`, {
-      //   backgroundColor: "#ffffff",
-      //   scale: 2
-      // });
       var node = document.getElementById("graph");
 
       let that = this;
@@ -120,8 +114,8 @@ export default {
             "justify-content": "center",
             "align-items": "center",
             "padding-top": "20px",
-            "white-space": "nowrap",
-          },
+            "white-space": "nowrap"
+          }
         })
         .then(function(dataUrl) {
           var a = document.createElement("a");
@@ -134,17 +128,17 @@ export default {
     restart() {
       this.$store.state.userInfo = null;
       this.$store.state.lifeData = null;
-    },
+    }
   },
   mounted() {
-    const lineData = this.lifeData.map((data) => data.score);
-    const ageLabel = this.lifeData.map((data) => `${data.endAge}`);
-    this.value = [-10, ...lineData];
-    this.ageLabels = [this.lifeData[0].startAge, ...ageLabel];
+    const lineData = this.lifeData.map(data => data.score);
+    const ageLabel = this.lifeData.map(data => `${data.endAge}`);
+    this.value = [...lineData];
+    this.ageLabels = [0, ...ageLabel];
     setTimeout(() => {
       this.show = true;
     }, 1000);
-  },
+  }
 };
 </script>
 
