@@ -4,15 +4,14 @@
     <div v-else id="graph">
       <h2>Life Graph of {{ userInfo.name }}</h2>
 
-      <div class="space" />
-      <v-row v-if="show">
+      <v-row v-if="show" class="graph-wrap">
         <v-col sm="1" class="y-axis caption">
           <span>10</span>
           <span>0</span>
           <span>-10</span>
         </v-col>
         <v-col sm="11">
-          <canvas :height="padHeight" />
+          <canvas v-if="topHeight !== '0px'" :height="topHeight" />
           <v-sparkline
             id="curve"
             :value="value"
@@ -23,10 +22,10 @@
             :stroke-linecap="lineCap"
             :gradient-direction="gradientDirection"
             type="trend"
-            :height="chartHeightString"
+            :height="graphHeight"
             auto-draw
           ></v-sparkline>
-          <canvas :height="padHeight" />
+          <canvas v-if="bottomHeight !== '0px'" :height="bottomHeight" />
           <div class="age-label">
             <div class="caption" v-for="(label, labelIdx) in ageLabels" :key="labelIdx">{{ label }}</div>
           </div>
@@ -48,7 +47,6 @@
 </template>
 
 <script>
-//import saveSvgAsPng from "save-svg-as-png";
 import domtoimage from "dom-to-image";
 
 const gradients = [
@@ -68,21 +66,33 @@ export default {
     lifeData() {
       return this.$store.state.lifeData;
     },
+    innerHeight() {
+      var style = window.getComputedStyle(
+        document.getElementById("axis"),
+        null
+      );
+      return style.getPropertyValue("height");
+    },
 
-    chartHeight() {
+    graphHeight() {
       const scores = this.lifeData.map(data => data.score);
       const maxScore = Math.max(...scores);
       const minScore = Math.min(...scores);
       const height = 10 * (maxScore - minScore + 1);
-      return height;
+      return `${height}px`;
     },
-    chartHeightString() {
-      return `${this.chartHeight}px`;
+    topHeight() {
+      const scores = this.lifeData.map(data => data.score);
+      const maxScore = Math.max(...scores);
+
+      const height = 15 * (10 - maxScore + 1);
+      return `${height}px`;
     },
-    padHeight() {
-      const chartHeight = this.chartHeight;
-      const pad = (200 - chartHeight) / 2;
-      return `${pad}px`;
+    bottomHeight() {
+      const scores = this.lifeData.map(data => data.score);
+      const minScore = Math.min(...scores);
+      const height = 15 * (10 + minScore);
+      return `${height}px`;
     }
   },
   data: () => ({
@@ -123,6 +133,9 @@ export default {
           a.href = dataUrl;
 
           a.click();
+        })
+        .catch(() => {
+          console.log(node);
         });
     },
     restart() {
@@ -159,7 +172,11 @@ div.caption {
   justify-content: space-between;
   align-items: center;
   word-break: keep-all;
-  padding: 6px 6px 36px 6px !important;
+  padding: 40px 6px 40px 6px !important;
+}
+
+.graph-wrap {
+  height: 400px;
 }
 
 @media only screen and (max-width: 880px) {
@@ -168,3 +185,4 @@ div.caption {
   }
 }
 </style>
+
