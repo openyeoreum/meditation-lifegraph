@@ -99,7 +99,7 @@ export default {
       return domtoimage.toPng(node, {
         bgcolor: "white",
         width: 600,
-        height: 500,
+        height: 600,
         style: {
           display: "flex",
           "flex-direction": "column",
