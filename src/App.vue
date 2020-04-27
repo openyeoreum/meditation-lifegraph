@@ -60,7 +60,7 @@ export default {
 }
 
 .wrapper {
-  width: 550px;
+  width: 450px;
   height: 100%;
   margin: 0 auto;
   display: flex;
