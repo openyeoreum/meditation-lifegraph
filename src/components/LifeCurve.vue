@@ -1,55 +1,21 @@
 <template>
   <div ref="lifeCurve">
-    <h2 v-if="!show">Making your life graph...</h2>
-    <div v-else id="graph">
+    <div id="graph">
       <h2>Life Graph of {{ userInfo.name }}</h2>
-
-      <v-row v-if="show" class="graph-wrap">
-        <v-col sm="1" class="y-axis caption">
-          <span>10</span>
-          <span>8</span>
-          <span>6</span>
-          <span>4</span>
-          <span>2</span>
-          <span>0</span>
-          <span>-2</span>
-          <span>-4</span>
-          <span>-6</span>
-          <span>-8</span>
-          <span>-10</span>
-        </v-col>
-        <v-col sm="11">
-          <canvas v-if="topHeight !== '0px'" :height="topHeight" />
-          <v-sparkline
-            id="curve"
-            :value="value"
-            :gradient="gradient"
-            :smooth="radius"
-            :padding="padding"
-            :line-width="width"
-            :stroke-linecap="lineCap"
-            :gradient-direction="gradientDirection"
-            type="trend"
-            :height="graphHeight"
-            auto-draw
-          ></v-sparkline>
-          <canvas v-if="bottomHeight !== '0px'" :height="bottomHeight" />
-          <div class="age-label">
-            <div class="caption" v-for="(label, labelIdx) in ageLabels" :key="labelIdx">{{ label }}</div>
-          </div>
-        </v-col>
-        <div class="space" />
-      </v-row>
+      <div class="space" />
+      <div class="graph-wrap">
+        <line-chart
+          class="width-100"
+          :chartData="chartdata"
+          :options="options"
+        />
+      </div>
+      <div class="space" />
     </div>
-    <v-row v-if="show">
+    <v-row>
       <v-btn text color="red" @click="restart">Restart</v-btn>
       <v-spacer />
       <v-btn text color="primary" @click="download">Download</v-btn>
-    </v-row>
-    <v-row v-else>
-      <v-spacer />
-      <v-progress-circular color="primary" class="ma-10" indeterminate />
-      <v-spacer />
     </v-row>
   </div>
 </template>
@@ -57,17 +23,12 @@
 <script>
 import firebase from "@/firebase.js";
 import domtoimage from "dom-to-image";
-
-const gradients = [
-  ["#222"],
-  ["#42b3f4"],
-  ["red", "orange", "yellow"],
-  ["purple", "violet"],
-  ["#00c6ff", "#F0F", "#FF0"],
-  ["#f72047", "#ffd200", "#1feaea"]
-];
+import LineChart from "@/components/LineChart.vue";
 
 export default {
+  components: {
+    LineChart,
+  },
   computed: {
     userInfo() {
       return this.$store.state.userInfo;
@@ -84,50 +45,82 @@ export default {
     },
 
     graphHeight() {
-      const scores = this.lifeData.map(data => data.score);
+      const scores = this.lifeData.map((data) => data.score);
       const maxScore = Math.max(...scores);
       const minScore = Math.min(...scores);
       const height = 10 * (maxScore - minScore + 1);
       return `${height}px`;
     },
     topHeight() {
-      const scores = this.lifeData.map(data => data.score);
+      const scores = this.lifeData.map((data) => data.score);
       const maxScore = Math.max(...scores);
 
       const height = 15 * (10 - maxScore + 1);
       return `${height}px`;
     },
     bottomHeight() {
-      const scores = this.lifeData.map(data => data.score);
+      const scores = this.lifeData.map((data) => data.score);
       const minScore = Math.min(...scores);
       const height = 15 * (10 + minScore);
       return `${height}px`;
-    }
+    },
   },
   data: () => ({
-    show: false,
-    width: 5,
-    radius: 10,
-    padding: 8,
-    lineCap: "round",
-    gradient: gradients[5],
-    value: [],
-    ageLabels: [],
-    gradientDirection: "right",
-    gradients
+    chartdata: {
+      labels: [],
+      datasets: [
+        {
+          label: "life-graph",
+          backgroundColor: "",
+          borderColor: "",
+          data: [],
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      legend: {
+        display: false,
+      },
+      fill: false,
+      scales: {
+        xAxes: [
+          {
+            gridLines: {
+              display: false,
+            },
+            scaleLabel: {
+              display: true,
+              labelString: "Age",
+            },
+          },
+        ],
+        yAxes: [
+          {
+            scaleLabel: {
+              display: true,
+              labelString: "Score",
+            },
+            ticks: {
+              min: -10,
+              max: 10,
+              stepSize: 2,
+            },
+          },
+        ],
+      },
+    },
   }),
   methods: {
     async download() {
       try {
         var node = document.getElementById("graph");
         const dataUrl = await this.getImage(node);
-        var blob = this.dataURItoBlob(dataUrl);
         var name = this.userInfo.name;
-        var email = this.userInfo.email;
         var timestamp = new Date().toISOString();
-        this.pushToFirebase(blob, `lifegraph_${email}_${name}_${timestamp}`);
         var a = document.createElement("a");
-        a.download = `lifegraph_${name}_${timestamp}`;
+        a.download = `lifegraph_${name}_${timestamp}.png`;
         a.href = dataUrl;
         a.click();
       } catch (err) {
@@ -138,15 +131,15 @@ export default {
       return domtoimage.toPng(node, {
         bgcolor: "white",
         width: 600,
-        height: 450,
+        height: 500,
         style: {
           display: "flex",
           "flex-direction": "column",
           "justify-content": "center",
           "align-items": "center",
           "padding-top": "20px",
-          "white-space": "nowrap"
-        }
+          "white-space": "nowrap",
+        },
       });
     },
     restart() {
@@ -161,7 +154,7 @@ export default {
       var userInfo = this.userInfo;
       var lifeData = this.lifeData;
 
-      graphRef.put(blob).then(snapshot => {
+      graphRef.put(blob).then((snapshot) => {
         snapshot.ref.getDownloadURL().then(function(downloadURL) {
           firebase
             .database()
@@ -171,7 +164,7 @@ export default {
               email: userInfo.email,
               age: userInfo.age,
               lifeData,
-              graph_url: downloadURL
+              graph_url: downloadURL,
             });
         });
       });
@@ -190,16 +183,32 @@ export default {
         ia[i] = byteString.charCodeAt(i);
       }
       return new Blob([ab], { type: mimeString });
-    }
+    },
   },
   mounted() {
-    const lineData = this.lifeData.map(data => data.score);
-    const ageLabel = this.lifeData.map(data => `${data.endAge}`);
-    this.value = [...lineData];
-    this.ageLabels = [0, ...ageLabel];
-    setTimeout(() => {
-      this.show = true;
-    }, 1000);
+    const lineData = this.lifeData.map((data) => data.score);
+    const ageLabel = this.lifeData.map(
+      (data) => `${data.startAge}-${data.endAge}`
+    );
+    var ctx = document.getElementById("line-chart").getContext("2d");
+    var gradient = ctx.createLinearGradient(500, 0, 100, 0);
+    gradient.addColorStop(0, "#f72047");
+    gradient.addColorStop(0.5, "#ffd200");
+    gradient.addColorStop(1, "#1feaea");
+
+    const chartdata = {
+      labels: ageLabel,
+      datasets: [
+        {
+          label: "",
+          fill: false,
+          backgroundColor: gradient,
+          borderColor: gradient,
+          data: lineData,
+        },
+      ],
+    };
+    this.chartdata = chartdata;
     setTimeout(async () => {
       var node = document.getElementById("graph");
       const dataUrl = await this.getImage(node);
@@ -208,8 +217,8 @@ export default {
       var email = this.userInfo.email;
       var timestamp = new Date().toISOString();
       this.pushToFirebase(blob, `lifegraph_${name}_${email}__${timestamp}`);
-    }, 3000);
-  }
+    }, 1000);
+  },
 };
 </script>
 
@@ -218,23 +227,14 @@ div.caption {
   white-space: nowrap;
 }
 
-.age-label {
-  display: flex;
-  width: 100%;
-  justify-content: space-around;
-}
-
-.y-axis {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  word-break: keep-all;
-  padding: 40px 6px 40px 6px !important;
-}
-
 .graph-wrap {
-  height: 400px;
+  width: 100%;
+  height: 400x;
+  position: relative;
+}
+
+.width-100 {
+  width: 100%;
 }
 
 @media only screen and (max-width: 880px) {
