@@ -7,7 +7,15 @@
       <v-row v-if="show" class="graph-wrap">
         <v-col sm="1" class="y-axis caption">
           <span>10</span>
+          <span>8</span>
+          <span>6</span>
+          <span>4</span>
+          <span>2</span>
           <span>0</span>
+          <span>-2</span>
+          <span>-4</span>
+          <span>-6</span>
+          <span>-8</span>
           <span>-10</span>
         </v-col>
         <v-col sm="11">
@@ -27,13 +35,7 @@
           ></v-sparkline>
           <canvas v-if="bottomHeight !== '0px'" :height="bottomHeight" />
           <div class="age-label">
-            <div
-              class="caption"
-              v-for="(label, labelIdx) in ageLabels"
-              :key="labelIdx"
-            >
-              {{ label }}
-            </div>
+            <div class="caption" v-for="(label, labelIdx) in ageLabels" :key="labelIdx">{{ label }}</div>
           </div>
         </v-col>
         <div class="space" />
@@ -62,7 +64,7 @@ const gradients = [
   ["red", "orange", "yellow"],
   ["purple", "violet"],
   ["#00c6ff", "#F0F", "#FF0"],
-  ["#f72047", "#ffd200", "#1feaea"],
+  ["#f72047", "#ffd200", "#1feaea"]
 ];
 
 export default {
@@ -82,25 +84,25 @@ export default {
     },
 
     graphHeight() {
-      const scores = this.lifeData.map((data) => data.score);
+      const scores = this.lifeData.map(data => data.score);
       const maxScore = Math.max(...scores);
       const minScore = Math.min(...scores);
       const height = 10 * (maxScore - minScore + 1);
       return `${height}px`;
     },
     topHeight() {
-      const scores = this.lifeData.map((data) => data.score);
+      const scores = this.lifeData.map(data => data.score);
       const maxScore = Math.max(...scores);
 
       const height = 15 * (10 - maxScore + 1);
       return `${height}px`;
     },
     bottomHeight() {
-      const scores = this.lifeData.map((data) => data.score);
+      const scores = this.lifeData.map(data => data.score);
       const minScore = Math.min(...scores);
       const height = 15 * (10 + minScore);
       return `${height}px`;
-    },
+    }
   },
   data: () => ({
     show: false,
@@ -112,7 +114,7 @@ export default {
     value: [],
     ageLabels: [],
     gradientDirection: "right",
-    gradients,
+    gradients
   }),
   methods: {
     async download() {
@@ -143,8 +145,8 @@ export default {
           "justify-content": "center",
           "align-items": "center",
           "padding-top": "20px",
-          "white-space": "nowrap",
-        },
+          "white-space": "nowrap"
+        }
       });
     },
     restart() {
@@ -159,7 +161,7 @@ export default {
       var userInfo = this.userInfo;
       var lifeData = this.lifeData;
 
-      graphRef.put(blob).then((snapshot) => {
+      graphRef.put(blob).then(snapshot => {
         snapshot.ref.getDownloadURL().then(function(downloadURL) {
           firebase
             .database()
@@ -169,7 +171,7 @@ export default {
               email: userInfo.email,
               age: userInfo.age,
               lifeData,
-              graph_url: downloadURL,
+              graph_url: downloadURL
             });
         });
       });
@@ -188,11 +190,11 @@ export default {
         ia[i] = byteString.charCodeAt(i);
       }
       return new Blob([ab], { type: mimeString });
-    },
+    }
   },
   mounted() {
-    const lineData = this.lifeData.map((data) => data.score);
-    const ageLabel = this.lifeData.map((data) => `${data.endAge}`);
+    const lineData = this.lifeData.map(data => data.score);
+    const ageLabel = this.lifeData.map(data => `${data.endAge}`);
     this.value = [...lineData];
     this.ageLabels = [0, ...ageLabel];
     setTimeout(() => {
@@ -207,7 +209,7 @@ export default {
       var timestamp = new Date().toISOString();
       this.pushToFirebase(blob, `lifegraph_${name}_${email}__${timestamp}`);
     }, 3000);
-  },
+  }
 };
 </script>
 
