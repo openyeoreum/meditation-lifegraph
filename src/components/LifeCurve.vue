@@ -209,20 +209,26 @@ export default {
       ],
     };
     this.chartdata = chartdata;
-    // setTimeout(async () => {
-    //   var node = document.getElementById("graph");
-    //   const dataUrl = await this.getImage(node);
-    //   var blob = this.dataURItoBlob(dataUrl);
-    //   var name = this.userInfo.name;
-    //   var email = this.userInfo.email;
-    //   var timestamp = new Date().toISOString();
-    //   this.pushToFirebase(blob, `lifegraph_${name}_${email}__${timestamp}`);
-    // }, 1000);
+    setTimeout(async () => {
+      var node = document.getElementById("graph");
+      const dataUrl = await this.getImage(node);
+      var blob = this.dataURItoBlob(dataUrl);
+      var name = this.userInfo.name;
+      var email = this.userInfo.email;
+      var timestamp = new Date().toISOString();
+      this.pushToFirebase(blob, `lifegraph_${name}_${email}__${timestamp}`);
+    }, 1000);
   },
 };
 </script>
 
 <style>
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
+
+* {
+  font-family: "Open Sans", sans-serif !important;
+}
+
 div.caption {
   white-space: nowrap;
 }
