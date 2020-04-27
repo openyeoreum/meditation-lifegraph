@@ -4,11 +4,7 @@
       <h2>Life Graph of {{ userInfo.name }}</h2>
       <div class="space" />
       <div class="graph-wrap">
-        <line-chart
-          class="width-100"
-          :chartData="chartdata"
-          :options="options"
-        />
+        <line-chart class="width-100" :chartData="chartdata" :options="options" />
       </div>
       <div class="space" />
     </div>
@@ -27,7 +23,7 @@ import LineChart from "@/components/LineChart.vue";
 
 export default {
   components: {
-    LineChart,
+    LineChart
   },
   computed: {
     userInfo() {
@@ -35,35 +31,7 @@ export default {
     },
     lifeData() {
       return this.$store.state.lifeData;
-    },
-    innerHeight() {
-      var style = window.getComputedStyle(
-        document.getElementById("axis"),
-        null
-      );
-      return style.getPropertyValue("height");
-    },
-
-    graphHeight() {
-      const scores = this.lifeData.map((data) => data.score);
-      const maxScore = Math.max(...scores);
-      const minScore = Math.min(...scores);
-      const height = 10 * (maxScore - minScore + 1);
-      return `${height}px`;
-    },
-    topHeight() {
-      const scores = this.lifeData.map((data) => data.score);
-      const maxScore = Math.max(...scores);
-
-      const height = 15 * (10 - maxScore + 1);
-      return `${height}px`;
-    },
-    bottomHeight() {
-      const scores = this.lifeData.map((data) => data.score);
-      const minScore = Math.min(...scores);
-      const height = 15 * (10 + minScore);
-      return `${height}px`;
-    },
+    }
   },
   data: () => ({
     chartdata: {
@@ -73,44 +41,44 @@ export default {
           label: "life-graph",
           backgroundColor: "",
           borderColor: "",
-          data: [],
-        },
-      ],
+          data: []
+        }
+      ]
     },
     options: {
       responsive: true,
 
       legend: {
-        display: false,
+        display: false
       },
       fill: false,
       scales: {
         xAxes: [
           {
             gridLines: {
-              display: false,
+              display: false
             },
             scaleLabel: {
               display: true,
-              labelString: "Age",
-            },
-          },
+              labelString: "Age"
+            }
+          }
         ],
         yAxes: [
           {
             scaleLabel: {
               display: true,
-              labelString: "Score",
+              labelString: "Score"
             },
             ticks: {
               min: -10,
               max: 10,
-              stepSize: 2,
-            },
-          },
-        ],
-      },
-    },
+              stepSize: 2
+            }
+          }
+        ]
+      }
+    }
   }),
   methods: {
     async download() {
@@ -138,8 +106,8 @@ export default {
           "justify-content": "center",
           "align-items": "center",
           "padding-top": "20px",
-          "white-space": "nowrap",
-        },
+          "white-space": "nowrap"
+        }
       });
     },
     restart() {
@@ -154,7 +122,7 @@ export default {
       var userInfo = this.userInfo;
       var lifeData = this.lifeData;
 
-      graphRef.put(blob).then((snapshot) => {
+      graphRef.put(blob).then(snapshot => {
         snapshot.ref.getDownloadURL().then(function(downloadURL) {
           firebase
             .database()
@@ -164,7 +132,7 @@ export default {
               email: userInfo.email,
               age: userInfo.age,
               lifeData,
-              graph_url: downloadURL,
+              graph_url: downloadURL
             });
         });
       });
@@ -183,12 +151,12 @@ export default {
         ia[i] = byteString.charCodeAt(i);
       }
       return new Blob([ab], { type: mimeString });
-    },
+    }
   },
   mounted() {
-    const lineData = this.lifeData.map((data) => data.score);
+    const lineData = this.lifeData.map(data => data.score);
     const ageLabel = this.lifeData.map(
-      (data) => `${data.startAge}-${data.endAge}`
+      data => `${data.startAge}-${data.endAge}`
     );
     var ctx = document.getElementById("line-chart").getContext("2d");
     var gradient = ctx.createLinearGradient(500, 0, 100, 0);
@@ -204,9 +172,9 @@ export default {
           fill: false,
           backgroundColor: gradient,
           borderColor: gradient,
-          data: lineData,
-        },
-      ],
+          data: lineData
+        }
+      ]
     };
     this.chartdata = chartdata;
     setTimeout(async () => {
@@ -218,7 +186,7 @@ export default {
       var timestamp = new Date().toISOString();
       this.pushToFirebase(blob, `lifegraph_${name}_${email}__${timestamp}`);
     }, 1000);
-  },
+  }
 };
 </script>
 

@@ -1,13 +1,11 @@
 <template>
   <div>
-    <h2>Hi {{ userInfo.name }}, <br />How do you think about your life?</h2>
+    <h2>
+      Hi {{ userInfo.name }},
+      <br />How do you think about your life?
+    </h2>
     <div class="space" />
-    <v-progress-linear
-      color="light-blue"
-      height="10"
-      v-model="progress"
-      striped
-    ></v-progress-linear>
+    <v-progress-linear color="light-blue" height="10" v-model="progress" striped></v-progress-linear>
     <div class="msg">
       <v-fade-transition>
         <div v-if="showMsg" class="caption">{{ message }}</div>
@@ -22,9 +20,7 @@
       :show-arrows="false"
     >
       <v-carousel-item v-for="(item, idx) in lifeData" :key="idx">
-        <p>
-          {{ `When you were ${item.startAge} ~ ${item.endAge} years old.` }}
-        </p>
+        <p>{{ `When you were ${item.startAge} ~ ${item.endAge} years old.` }}</p>
         <div class="space" />
         <v-slider
           v-model="item.score"
@@ -48,13 +44,9 @@
     </v-carousel>
 
     <v-row class="pa-3">
-      <button class="gradient-btn" @click="prev">
-        {{ carousel === 0 ? "Reset" : "Previous" }}
-      </button>
+      <button class="gradient-btn" @click="prev">{{ carousel === 0 ? "Reset" : "Previous" }}</button>
       <v-spacer />
-      <button class="gradient-btn" @click="next">
-        {{ carousel === lifeData.length - 1 ? "Finish" : "Next" }}
-      </button>
+      <button class="gradient-btn" @click="next">{{ carousel === final ? "Finish" : "Next" }}</button>
     </v-row>
   </div>
 </template>
@@ -70,11 +62,14 @@ export default {
     userInfo() {
       return this.$store.state.userInfo;
     },
+    final() {
+      return this.lifeData ? this.lifeData.length - 1 : 0;
+    }
   },
   watch: {
     userInfo: function(info) {
       this.parseUserInfo(info);
-    },
+    }
   },
   data: () => ({
     sliderLabel: [
@@ -98,7 +93,7 @@ export default {
       "",
       "",
       "",
-      "Good",
+      "Good"
     ],
     tickLabel: [
       "-10",
@@ -121,7 +116,7 @@ export default {
       "",
       "8",
       "",
-      "10",
+      "10"
     ],
     min: -10,
     max: 10,
@@ -129,7 +124,7 @@ export default {
     carousel: 0,
     showMsg: false,
     message: "",
-    msgList: ["Nice.", "Keep up!", "Almost there!"],
+    msgList: ["Nice.", "Keep up!", "Almost there!"]
   }),
   methods: {
     parseUserInfo(info) {
@@ -142,7 +137,7 @@ export default {
           startAge: Math.round(age),
           endAge: age + step > max ? max : age + step,
           score: 0,
-          reason: "",
+          reason: ""
         });
       }
 
@@ -173,11 +168,11 @@ export default {
       setTimeout(() => {
         this.showMsg = false;
       }, 1000);
-    },
+    }
   },
   mounted() {
     this.parseUserInfo(this.userInfo);
-  },
+  }
 };
 </script>
 

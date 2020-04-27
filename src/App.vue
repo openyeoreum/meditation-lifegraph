@@ -2,9 +2,7 @@
   <v-app>
     <v-content class="bg-gradient">
       <div class="wrapper">
-        <h1 class="text-white">
-          Meditation: A way to achieve your goals in your life
-        </h1>
+        <h1 class="text-white">Meditation: A way to achieve your goals in your life</h1>
         <div class="space" />
         <div class="space" />
         <v-card class="card__main" elevation="10">
@@ -30,7 +28,7 @@ export default {
   components: {
     GeneralInfo,
     LifeScore,
-    LifeCurve,
+    LifeCurve
   },
 
   computed: {
@@ -39,12 +37,12 @@ export default {
     },
     lifeData() {
       return this.$store.state.lifeData;
-    },
+    }
   },
 
   data: () => ({
     //
-  }),
+  })
 };
 </script>
 
@@ -60,7 +58,7 @@ export default {
 }
 
 .wrapper {
-  width: 450px;
+  width: 550px;
   height: 100%;
   margin: 0 auto;
   display: flex;
