@@ -1,7 +1,7 @@
 <template>
   <div ref="lifeCurve">
     <div id="graph">
-      <h2>{{ userInfo.name }}의 라이프 그래프<br>진단된 내용은 이메일로 전해 드려요.</h2>
+      <h2>{{ userInfo.name }}님의 라이프 그래프,<br>진단된 내용은 이메일로 전해 드릴게요.</h2>
       <div class="space" />
       <div class="graph-wrap">
         <line-chart class="width-100" :chartData="chartdata" :options="options" />
