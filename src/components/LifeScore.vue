@@ -1,8 +1,8 @@
 <template>
   <div>
     <h2>
-      Hi {{ userInfo.name }},
-      <br />How do you think about your life?
+      안녕하세요. {{ userInfo.name }}님,
+      <br />곰곰히 나의 인생을 돌아볼까요?
     </h2>
     <div class="space" />
     <v-progress-linear color="light-blue" height="10" v-model="progress" striped></v-progress-linear>
@@ -20,7 +20,7 @@
       :show-arrows="false"
     >
       <v-carousel-item v-for="(item, idx) in lifeData" :key="idx">
-        <p>{{ `When you were ${item.startAge} ~ ${item.endAge} years old.` }}</p>
+        <p>{{ `당신의 나이 ${item.startAge} ~ ${item.endAge} 때의 행복 점수는?` }}</p>
         <div class="space" />
         <v-slider
           v-model="item.score"
@@ -32,13 +32,13 @@
           tick-size="0"
         />
         <div class="slider-label">
-          <span>Bad</span>
-          <span class="middle">Soso</span>
-          <span>Good</span>
+          <span>나쁨</span>
+          <span class="middle">보통</span>
+          <span>좋음</span>
         </div>
         <div class="space" />
 
-        <p>Why it was good (or bad) ? (Optional)</p>
+        <p>해당 점수를 선택한 이유는? (상세히 작성)</p>
         <v-text-field v-model="item.reason" light />
       </v-carousel-item>
     </v-carousel>
@@ -124,7 +124,7 @@ export default {
     carousel: 0,
     showMsg: false,
     message: "",
-    msgList: ["Nice.", "Keep up!", "Almost there!"]
+    msgList: ["좋아요.", "지속해 보자구요!", "거의 다 왔어요!"]
   }),
   methods: {
     parseUserInfo(info) {

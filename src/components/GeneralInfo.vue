@@ -4,25 +4,31 @@
     <logo />
     <div class="space" />
 
-    <h2>Let's get started!</h2>
+    <h2>작성자 정보</h2>
     <div class="space" />
     <v-text-field
       v-model="name"
       :rules="nameRules"
-      label="Name"
+      label="이름"
       required
     ></v-text-field>
     <v-text-field
       v-model="age"
       type="number"
       :rules="ageRules"
-      label="Age"
+      label="나이"
+      required
+    ></v-text-field>
+    <v-text-field
+      v-model="region"
+      :rules="regionRules"
+      label="사는 지역"
       required
     ></v-text-field>
     <v-text-field
       v-model="email"
       :rules="emailRules"
-      label="E-mail"
+      label="이메일"
       required
     ></v-text-field>
     <div class="space" />
@@ -35,8 +41,8 @@
       Start
     </button>
     <div class="logos">
-      <img class="logo" :src="logoKaist" />
       <img class="logo" :src="logoCoursera" />
+      <img class="logo" :src="logoKaist" />
     </div>
   </v-form>
 </template>
@@ -60,6 +66,8 @@ export default {
       (v) => !!v || "Age is required",
       (v) => v >= 10 || "Too young to think about life...",
     ],
+    region: "",
+    regionRules: [(v) => !!v || "Region is required"],
     email: "",
     emailRules: [
       (v) => !!v || "E-mail is required",
@@ -74,6 +82,7 @@ export default {
       this.$store.state.userInfo = {
         name: this.name,
         age: this.age,
+        region: this.region,
         email: this.email,
       };
     },

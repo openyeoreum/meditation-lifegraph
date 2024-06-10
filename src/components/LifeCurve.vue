@@ -131,6 +131,7 @@ export default {
               name: userInfo.name,
               email: userInfo.email,
               age: userInfo.age,
+              region: userInfo.region,
               lifeData,
               graph_url: downloadURL
             });

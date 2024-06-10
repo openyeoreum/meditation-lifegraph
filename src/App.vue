@@ -2,7 +2,7 @@
   <v-app>
     <v-content class="bg-gradient">
       <div class="wrapper">
-        <h1 class="text-white">Meditation: A way to achieve your goals in your life</h1>
+        <h1 class="text-white">라이프 그래프 : 나의 인생을 돌아보다.</h1>
         <div class="space" />
         <div class="space" />
         <v-card class="card__main" elevation="10">

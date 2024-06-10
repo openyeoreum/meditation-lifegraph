@@ -12,7 +12,7 @@
       type="trend"
       auto-draw
     ></v-sparkline>
-    <div class="gradient-title">Life Graph</div>
+    <div class="gradient-title"></div>
   </div>
 </template>
 
