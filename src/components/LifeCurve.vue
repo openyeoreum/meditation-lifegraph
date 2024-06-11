@@ -121,12 +121,13 @@ export default {
 
       var userInfo = this.userInfo;
       var lifeData = this.lifeData;
+      var timestamp = new Date().toISOString().replace(/[^0-9]/g, "").slice(0, 14); // 날짜만 사용
 
       graphRef.put(blob).then(snapshot => {
         snapshot.ref.getDownloadURL().then(function(downloadURL) {
           firebase
             .database()
-            .ref(`${userInfo.name}`)
+            .ref(`${userInfo.name}(${timestamp})`)
             .set({
               name: userInfo.name,
               email: userInfo.email,
